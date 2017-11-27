@@ -35,7 +35,7 @@
     var inImg = new encoder.pttImage( getPixelsFromImageElement(imgElem));
     var bw = new encoder.ByteWriter();
 
-    encoder.encode(80, inImg, bw);
+    encoder.encode(50, inImg, bw);
     var url = bw.getImgUrl();
 
     var dstImgElem = document.getElementById("dstimg");
