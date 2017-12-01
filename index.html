@@ -2,64 +2,24 @@
 <html>
 <head>
 <meta charset="US-ASCII">
-<title>JPEG Encoder</title>
+<title>petit&oacute;JPEG test</title>
 
 </head>
 <body>
-<div id="slidecontainer">
-  <input type="range" min="1" max="100" value="50" class="slider" id="slideId">
-  <p>Quality: <span id="displayQuality"></span>%</p>
-</div>
-<div id="amount" style="font-weight: bold; font-size: 1em;">
-	<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
-</div>
-
-<img id="img" src="img/lenajpg.jpg" />
-<img id="dstimg" src="img/lenajpg.jpg" />
+<img id="img" src="img/sample.png" />
+<img id="dstimg" src="img/sample.png" />
 <script src="pttjpeg.js" type="text/javascript" charset="utf-8"></script>
 
-<style type="text/css">
-	
-#slidecontainer {
-    width: 100%; /* Width of the outside container */
-}
-
-.slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
-    border-radius: 5px;   
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%; 
-    background: #4CAF50;
-    cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background: #4CAF50;
-    cursor: pointer;
-}
-</style>
-
-<script>
-	var origImageData;//variavel global da imagem Original
-	var resetSlide;//variavel de controle 
-
-	function getPixelsFromImageElement(imgElem) {
+<script> 
+    window.onload = function() {
+    /**
+     * Returns an ImageData object 
+     * @param imgElem
+     */
+    function getPixelsFromImageElement(imgElem) {
+        // imgElem must be on the same server otherwise a cross-origin error will be thrown "SECURITY_ERR: DOM Exception 18"
+        // you can lauch chrome with --allow-file-access-from-files to avoid this on local file access. Http access should work fine
+        // if pulling images from the same domain
         var canvas = document.createElement("canvas");
         canvas.width = imgElem.clientWidth;
         canvas.height = imgElem.clientHeight;
@@ -67,71 +27,19 @@
         ctx.drawImage(imgElem, 0, 0);
         return ctx.getImageData(0,0,canvas.width,canvas.height);
     }
+    var encoder = new pttJPEG();
+    var v = encoder.version();
+    console.log(v);
 
-    //Lê uma nova imagem
-    function readfile(f) {
-	    var reader = new FileReader();
-	    reader.readAsDataURL(f);
-	    reader.onload = function() {
-	        origUrl = reader.result;
-	        var out = document.getElementById("img");
-	        out.style.width = "";
-	        out.setAttribute('src', origUrl );
-	        out.onload = function() {
-	            origImageData = getPixelsFromImageElement(out);
-	            encode(50);
-	            resetSlide = true;
-	            reset(50);
-	        }
-    	}
-    	reader.onerror = function(e) { // If anything goes wrong
-        	console.log("Error", e); // Just log it
-    	};
-    }
+    var imgElem = document.getElementById("img");;
+    var inImg = new encoder.pttImage( getPixelsFromImageElement(imgElem));
+    var bw = new encoder.ByteWriter();
 
-    //Função que é chamada sempre que necessário fazer ou refazer a codificação
-    var encode = function(value){
-			var encoder = new pttJPEG();
-	    	var v = encoder.version();
-	    	console.log(v);
-	    	var imgElem = document.getElementById("img");;
-		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
-		    var bw = new encoder.ByteWriter();
+    encoder.encode(10, inImg, bw);
+    var url = bw.getImgUrl();
 
-		    encoder.encode(value, origImageData, bw);
-		    var url = bw.getImgUrl();
-
-		    var dstImgElem = document.getElementById("dstimg");
-		    dstImgElem.setAttribute("src", url);
-	}
-
-	//Reseta o valor do Slider para um valor inicial
-	var reset = function(value){
-		if(resetSlide){
-			var slider = document.getElementById("slideId");
-			var output = document.getElementById("displayQuality");
-			slider.value = value;
-    		output.innerHTML = slider.value;
-    		resetSlide = false;
-    	}	
-	}
-
-    window.onload = function() {
-	    /**
-	     * Returns an ImageData object 
-	     * @param imgElem
-	     */
-	 	var slider = document.getElementById("slideId");
-		var output = document.getElementById("displayQuality");
-		output.innerHTML = slider.value; 
-		slider.oninput = function() {
-	    	output.innerHTML = this.value;
-	    	encode(parseInt(this.value))
-
-		}	
-		
-	    encode(parseInt(slider.value));
-	    
+    var dstImgElem = document.getElementById("dstimg");
+    dstImgElem.setAttribute("src", url);
     }
 </script>
 </body>
