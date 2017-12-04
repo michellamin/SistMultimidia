@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="US-ASCII">
+<meta http-equiv="cache-control" content="no-cache" />
 <title>JPEG Encoder</title>
 
 </head>
@@ -14,8 +15,8 @@
 	<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
 </div>
 
-<img id="img" src="img/lenajpg.jpg" />
-<img id="dstimg" src="img/lenajpg.jpg" />
+<img id="img" src="img/sample_shard.png" />
+<img id="dstimg" src="img/sample_shard.png" />
 <script src="pttjpeg.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css">
@@ -97,8 +98,8 @@
 	    	var imgElem = document.getElementById("img");;
 		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
 		    var bw = new encoder.ByteWriter();
-
-		    encoder.encode(value, origImageData, bw);
+		    var type = 6; //tipo de imagem output
+		    encoder.encodeSubSample(origImageData, bw,type);
 		    var url = bw.getImgUrl();
 
 		    var dstImgElem = document.getElementById("dstimg");

@@ -932,6 +932,7 @@
                 while( run>= 16 )
                 {
                     // Write value
+
                     bitwriter.putbits(HTAC[0xf0].val, HTAC[0xf0].len );
                     run -= 16;
                 }
@@ -943,14 +944,14 @@
                 // Write value
                 var hv = (run << 4) | acsize;
                 bitwriter.putbits(HTAC[hv].val, HTAC[hv].len );
-
+                
                 // AC Bits
                 if( acsize )
                 {
                     accoeff = huffman_compact(accoeff, acsize);
                     bitwriter.putbits(accoeff, acsize );
                 }
-
+                
                 // Keep position of last encoded coefficient
                 lastcoeff_pos = i;
             }
@@ -962,6 +963,9 @@
 
             return last_dc;
         }
+
+        
+        
 
 
         /**
@@ -976,7 +980,7 @@
          * pixels are written to the local private PTTJPEG fields YDU,UDU,VDU
          *
          */
-        function rgb2yuv_444( xpos, ypos)
+        function rgb2yuv_444( xpos, ypos,t)
         {
             // RGBA format in unpacked bytes
             var mcuimg = inputImage.getPixels( xpos, ypos, 8, 8);
@@ -987,7 +991,7 @@
             var pel;
             var P=0;
             var x,y,off,off_1=0,R,G,B;
-
+            var type = t | 0;
             if( mcuimg.w==8 && mcuimg.h==8 ) {
                 /* block is 8x8 */
                 for ( y=0; y<8; y++) {        
@@ -998,9 +1002,35 @@
                         G = buf[off+1];
                         B = buf[off+2];
 
-                        YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
-                        UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
-                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B)); 
+                        if(type == 0){//IMAGEM ORIGINAL
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+                        }else if(type == 1){//APENAS LUMINANCIA
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+                        	UDU[off_1] = 0;
+	                        VDU[off_1++] = 0;
+                        }else if(type == 2){//APENAS CB
+                        	YDU[off_1]   = 0;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] = 0;
+                        }else if(type == 3){//APENAS CR
+                        	YDU[off_1]   = 0;
+                        	UDU[off_1] = 0;
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+                        }else if(type == 4){// Y e CB
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] = 0;
+                        }else if(type == 5){// Y e CR
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+	                    	UDU[off_1] = 0;
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+	                    }else if(type == 6){// CB e CR
+	                    	YDU[off_1]   = 0;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+	                    }
                     }
                 }
             } else {
@@ -1024,13 +1054,41 @@
                         G = buf[off+1];
                         B = buf[off+2];
 
-                        YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
-                        UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
-                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B)); 
+                        if(type == 0){//IMAGEM ORIGINAL
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+                        }else if(type == 1){//APENAS LUMINANCIA
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+                        	UDU[off_1] = 0;
+	                        VDU[off_1++] = 0;
+                        }else if(type == 2){//APENAS CB
+                        	YDU[off_1]   = 0;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] = 0;
+                        }else if(type == 3){//APENAS CR
+                        	YDU[off_1]   = 0;
+                        	UDU[off_1] = 0;
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+                        }else if(type == 4){// Y e CB
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] = 0;
+                        }else if(type == 5){// Y e CR
+                        	YDU[off_1]   =((( 0.29900)*R+( 0.58700)*G+( 0.11400)*B))-0x80;
+	                    	UDU[off_1] = 0;
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+	                    }else if(type == 6){// CB e CR
+	                    	YDU[off_1]   = 0;
+                        	UDU[off_1]   =(((-0.16874)*R+(-0.33126)*G+( 0.50000)*B));
+	                        VDU[off_1++] =((( 0.50000)*R+(-0.41869)*G+(-0.08131)*B));
+	                    }
                     }
                 }
             }
         }
+
+
 
         //--------------------------------------------------------------------
         // exported functions
@@ -1170,6 +1228,64 @@
          *
          * 
          */
+         this.encodeSubSample = function(img,bw,type){
+         	if(!img) 
+                DEBUGMSG("input image not provided. aborting encode");
+
+            if(!bw) 
+                DEBUGMSG("byte writer not provided. aborting encode");
+
+            quality = 100;
+            DEBUGMSG(sprintf("pttjpeg_encode  qual:%d,  %dx%d", quality ,img.width,img.height ));
+            var start = new Date().getTime();
+
+            init_quality_settings(quality);
+    
+
+            /* start the bitwriter */
+            bitwriter = new BitWriter();
+            bitwriter.setByteWriter(bw);
+
+            /* save copy of input image */
+            inputImage = img;
+
+            /* write headers out */
+            bitwriter.putshort( 0xFFD8); // SOI
+            writeAPP0();
+            writeDQT();
+            writeSOF0( img.width, img.height );
+            writeDHT();
+            writeSOS();
+
+            DEBUGMSG("wrote headers");
+
+            var DCU=0, DCY=0, DCV=0;
+
+            var width=img.width;
+            var height=img.height;
+            var ypos,xpos;
+            var mcucount = 0;
+
+            for (ypos=0; ypos<height; ypos+=8)
+            {
+                for (xpos=0; xpos<width; xpos+=8)
+                {
+                    rgb2yuv_444( xpos, ypos,type);
+                    DCY = processDU( YDU, fdtbl_Y, DCY, YDC_HT, YAC_HT);
+                    DCU = processDU( UDU, fdtbl_UV, DCU, UVDC_HT, UVAC_HT);
+                    DCV = processDU( VDU, fdtbl_UV, DCV, UVDC_HT, UVAC_HT);
+
+
+                }
+            }
+
+            writeEOI();
+            DEBUGMSG(sprintf("wrote EOI. %d bytes written", bitwriter.getWrittenBytes() ));
+            var stop = new Date().getTime();
+            encodetime = stop-start;
+            DEBUGMSG(sprintf("%d ms", encodetime));
+        }
+
         this.encode = function (quality, img, bw)
         {
             if(!img) 
@@ -1208,7 +1324,6 @@
             var height=img.height;
             var ypos,xpos;
             var mcucount = 0;
-
 
             for (ypos=0; ypos<height; ypos+=8)
             {
