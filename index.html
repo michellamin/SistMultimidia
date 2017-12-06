@@ -14,9 +14,14 @@
 <div id="amount" style="font-weight: bold; font-size: 1em;">
 	<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
 </div>
+<div><input type="button" onclick="startEncoding();" value="Encode"></div>
+<div>
+	<img id="img" src="img/sample_shard.png" />
+	<img id="imgY" src="img/sample_shard.png" />
+	<img id="imgCr" src="img/sample_shard.png" />
+	<img id="imgCb" src="img/sample_shard.png" />
+</div>
 
-<img id="img" src="img/sample_shard.png" />
-<img id="dstimg" src="img/sample_shard.png" />
 <script src="pttjpeg.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css">
@@ -90,19 +95,51 @@
     	};
     }
 
-    //Função que é chamada sempre que necessário fazer ou refazer a codificação
-    var encode = function(value){
+    //Extrair a luminancia Y
+    var extractY = function(){
 			var encoder = new pttJPEG();
 	    	var v = encoder.version();
 	    	console.log(v);
 	    	var imgElem = document.getElementById("img");;
 		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
 		    var bw = new encoder.ByteWriter();
-		    var type = 6; //tipo de imagem output
+		    var type = 1; //tipo de imagem output
 		    encoder.encodeSubSample(origImageData, bw,type);
 		    var url = bw.getImgUrl();
 
-		    var dstImgElem = document.getElementById("dstimg");
+		    var dstImgElem = document.getElementById("imgY");
+		    dstImgElem.setAttribute("src", url);
+	}
+
+	//Extrair crominância Cr
+    var extractCr = function(){
+			var encoder = new pttJPEG();
+	    	var v = encoder.version();
+	    	console.log(v);
+	    	var imgElem = document.getElementById("img");;
+		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
+		    var bw = new encoder.ByteWriter();
+		    var type = 2; //tipo de imagem output
+		    encoder.encodeSubSample(origImageData, bw,type);
+		    var url = bw.getImgUrl();
+
+		    var dstImgElem = document.getElementById("imgCr");
+		    dstImgElem.setAttribute("src", url);
+	}
+
+	//Extrair crominância Cb
+    var extractCb = function(){
+			var encoder = new pttJPEG();
+	    	var v = encoder.version();
+	    	console.log(v);
+	    	var imgElem = document.getElementById("img");;
+		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
+		    var bw = new encoder.ByteWriter();
+		    var type = 3; //tipo de imagem output
+		    encoder.encodeSubSample(origImageData, bw,type);
+		    var url = bw.getImgUrl();
+
+		    var dstImgElem = document.getElementById("imgCb");
 		    dstImgElem.setAttribute("src", url);
 	}
 
@@ -130,8 +167,9 @@
 	    	encode(parseInt(this.value))
 
 		}	
-		
-	    encode(parseInt(slider.value));
+		extractY();
+		extractCr()
+		extractCb();
 	    
     }
 </script>

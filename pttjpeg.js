@@ -1383,7 +1383,9 @@
                     'width' : msg.data.width,
                     'height' : msg.data.height,
                     'quality' : msg.data.quality,
-                    'encodetime' : encoder.getEncodeTime()
+                    'encodetime' : encoder.getEncodeTime(),
+                    'quantTableOne' : YQT,
+                    'quantTableTwo' : UVQT
                 }
 
                 postMessage(m);
