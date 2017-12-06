@@ -1093,6 +1093,9 @@
         //--------------------------------------------------------------------
         // exported functions
         this.version = function() { return "petitóJPEG 0.4"; };
+        
+        //RETORNA MATRIZES DE QUANTIZAÇÃO PADRÃO
+        this.getQuantizationMatricies = function() { return [YQT,UVQT]; };
 
         this.setVerbosity = function(flagVerbose) {
             flagQuiet = !flagVerbose;
@@ -1383,7 +1386,9 @@
                     'width' : msg.data.width,
                     'height' : msg.data.height,
                     'quality' : msg.data.quality,
-                    'encodetime' : encoder.getEncodeTime()
+                    'encodetime' : encoder.getEncodeTime(),
+                    'quantTableOne' : YQT,
+                    'quantTableTwo' : UVQT
                 }
 
                 postMessage(m);
