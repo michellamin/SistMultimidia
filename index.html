@@ -85,6 +85,9 @@
 	        out.style.width = "";
 	        out.setAttribute('src', origUrl );
 	        out.onload = function() {
+				extractY();
+				extractCr();
+				extractCb();
 	            origImageData = getPixelsFromImageElement(out);
 	            encode(50);
 	            resetSlide = true;
@@ -152,11 +155,14 @@
 	    	var imgElem = document.getElementById("img");;
 		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
 		    var bw = new encoder.ByteWriter();
-		    encoder.encode(value,origImageData,bw);
+			encoder.encode(value,origImageData,bw);
 		    var url = bw.getImgUrl();
 
 		    var dstImgElem = document.getElementById("imgResult");
-		    dstImgElem.setAttribute("src", url);
+			dstImgElem.setAttribute("src", url);
+			
+			console.log(encoder.getQuantizationMatricies());
+		
 	}
 
 	//Reseta o valor do Slider para um valor inicial
@@ -180,12 +186,14 @@
 		output.innerHTML = slider.value; 
 		slider.oninput = function() {
 	    	output.innerHTML = this.value;
-			encode(parseInt(this.value))
-		}	
+			encode(parseInt(this.value));
+		}
+		encode(parseInt(this.value));	
 		extractY();
-		extractCr()
+		extractCr();
 		extractCb();
-    }
+	}
+
 </script>
 </body>
 </html>

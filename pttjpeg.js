@@ -1093,6 +1093,9 @@
         //--------------------------------------------------------------------
         // exported functions
         this.version = function() { return "petitóJPEG 0.4"; };
+        
+        //RETORNA MATRIZES DE QUANTIZAÇÃO PADRÃO
+        this.getQuantizationMatricies = function() { return [YQT,UVQT]; };
 
         this.setVerbosity = function(flagVerbose) {
             flagQuiet = !flagVerbose;
