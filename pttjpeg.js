@@ -1346,6 +1346,16 @@
             var stop = new Date().getTime();
             encodetime = stop-start;
             DEBUGMSG(sprintf("%d ms", encodetime));
+
+            var m = {
+                'bw' : bw.getWrittenBytes(),
+                'reason' : 'image',
+                'width' : img.width,
+                'height' : img.height,
+                'quality' : quality,
+                'encodetime' : encodetime
+            }
+            return m;
         }
 
 
