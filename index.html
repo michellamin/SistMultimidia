@@ -134,13 +134,11 @@
     text-decoration: none;
     font-size: 17px;
 	background-color: #a9d8ce;
-    color: white;
     display: block;
 }
 
 #cbButton{
 	float: left;
-    color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -151,7 +149,6 @@
 
 #crButton{
 	float: left;
-    color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -169,6 +166,10 @@
     font-size: 17px;
 	background-color: #a9d8ce;
     color: black;
+}
+
+.active{
+	background-color: #83afa4 !important;
 }
 
 #luminancia{
@@ -208,7 +209,7 @@ h3{
 
 p{
 	color: black;
-	font-size: : 10px;
+	font-size:  10px;
 	margin-left: 10px;
 }
 
@@ -418,7 +419,15 @@ p{
 	}
 
 	function showhide(id) {
-	    var x = document.getElementById(id);
+		var x = document.getElementById(id);
+		var y = document.getElementById(id+'Button');
+
+		if(!y.classList.contains('active') ){
+			y.classList.add('active');
+		}else{
+			y.classList.remove('active');
+		}
+
 	    if (x.style.display === "block") {
 	    	x.style.display = "none";
 	    } else {
