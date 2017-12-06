@@ -1,46 +1,228 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="US-ASCII">
+<meta charset="utf-8">
 <meta http-equiv="cache-control" content="no-cache" />
 <title>JPEG Encoder</title>
-
 </head>
 <body>
-<div id="slidecontainer">
-  <input type="range" min="1" max="100" value="50" class="slider" id="slideId">
-  <p>Quality: <span id="displayQuality"></span>%</p>
+<div id="mySidenav" class="sidenav">
+	<h1>JPEG Encoder</h1>
+	<div id="slidecontainer">
+  		<input type="range" min="1" max="100" value="50" class="slider" id="slideId">
+  		<h3>Quality: <span id="displayQuality"></span>%</h3>
+  		<h3>Size: <span id="displaySize"></span>Bytes</h3>
+  		<h3>Dimension: <span id="displayHeight"></span>x<span id="displayWidth"></span></h3>
+  		<h3>Time: <span id="displayTime"></span>ms</h3>
+	</div>
+	<div id="amount">
+		<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
+	</div>
+  	<div>
+  		<input type="button" onclick="startEncoding();" value="Encode" id="encodeButton">
+	</div>
+	<button id="firstphasebutton" onclick="showhide('firstphase')">First Phase</button>
+
+	<div id="firstphase">
+		<p><font size="2">A representação de cores é convertida de RGB(usada em monitores) para YCbCr, consistindo em uma componente de brilho Y e duas componentes de cores Cb e Cr(b e r de blue e red).</font></p>
+	</div>
+  	<button id="secondphasebutton" onclick="showhide('secondphase')">Second Phase</button>
+
+	<div id="secondphase">
+		<div><font size="2">
+		<p>Em seguida, a imagem é dividida em blocos de 8×8 pixels, e a cada bloco é aplicada a Transformada Discreta de Cosseno com sigla DCT, do inglês.
+		</p>
+		<p>Após isso, é usada uma matriz de quantização 8x8 para fazer a quantificação de cada bloco, ou seja, se aplica um coeficiente de perda (que permite determinar a proporção tamanho/qualidade) que anulará ou diminuirá os valores de alta frequência, para minimizar os detalhes, percorrendo o bloco inteligentemente com uma codificação RLE (em ziguezague, para retirar um máximo de valores nulos).
+		</p>
+		<p>Os dados resultantes para todos os blocos 8×8, que tipicamente são matrizes onde os números significativos estão no canto superior esquerdo, e com aspecto de matriz esparsa, são novamente compactados com um algoritmo sem perdas, uma variante da codificação de Huffman e armazenados no arquivo JPEG.</p>
+		</font>
+		</div>
+	</div>
+  	
+  	
 </div>
-<div id="amount" style="font-weight: bold; font-size: 1em;">
-	<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
-</div>
-<div><input type="button" onclick="startEncoding();" value="Encode"></div>
-<div>
+
+<div id="main">
+	<div class="topnav" id="myTopnav">
+	  	<button id="luminanciaButton" onclick="showhide('luminancia')">Luminance - Y</button>
+	  	<button id="cbButton" onclick="showhide('cb')">Chrominance - Cb</button>
+	  	<button id="crButton" onclick="showhide('cr')">Chrominance - Cr</button>
+	  	<button id="compressButton" onclick="showhide('compress')">Compressed</button>
+	</div>
+
+	<h2>Original:</h2>
 	<img id="img" src="img/sample_shard.png" />
-	<img id="imgY" src="img/sample_shard.png" />
-	<img id="imgCr" src="img/sample_shard.png" />
-	<img id="imgCb" src="img/sample_shard.png" />
-	<img id="imgResult" src="img/sample_shard.png" />
+	
+	<div id="luminancia">
+		<h2>Luminance - Y:</h2>
+		<img id="imgY" src="img/sample_shard.png" />
+	</div>
+
+	
+	<div id="cb">
+		<h2>Chrominance - Cb:</h2>
+		<img id="imgCr" src="img/sample_shard.png" />
+	</div>
+
+	
+	<div id="cr">
+		<h2>Chrominance - Cr:</h2>
+		<img id="imgCb" src="img/sample_shard.png" />
+	</div>
+
+	
+	<div id="compress">
+		<h2>Compressed:</h2>
+		<img id="imgResult" src="img/sample_shard.png" />
+	</div>
 </div>
+
 
 <script src="pttjpeg.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css">
-	
-#slidecontainer {
-    width: 100%; /* Width of the outside container */
+
+#encodeButton{
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+#amount{
+	font-weight: bold; 
+	font-size: 1em; 
+	margin-left: 20px;
+}
+
+#main{
+	margin-right: 250px;
+}
+
+#firstphase {
+    width: 100%;
+    padding: 5px 0;
+    text-align: left;
+    background-color: lightblue;
+    margin-top: 1px;
+    display: none;
+}
+
+#firstphasebutton{
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+#secondphasebutton{
+	margin-top: 20px;
+	margin-left: 20px;
+	display: block;
+}
+
+#secondphase{
+	width: 100%;
+    padding: 5px 0;
+    text-align: left;
+    background-color: lightblue;
+    margin-top: 1px;
+    display: none;
+}
+
+#luminanciaButton{
+	float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+	background-color: #a9d8ce;
+    color: white;
+    display: block;
+}
+
+#cbButton{
+	float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+	background-color: #a9d8ce;
+    color: blue;
+}
+
+#crButton{
+	float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+	background-color: #a9d8ce;
+    color: red;
+}
+
+#compressButton{
+	float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+	background-color: #a9d8ce;
+    color: black;
+}
+
+#luminancia{
+	display: none;
+}
+
+#cb{
+	display: none;
+}
+
+#cr{
+	display: none;
+}
+
+#compress{
+	display: none;
+}
+
+
+h1{
+	color: black;
+	margin-top: 0px;
+	text-align: center;
+}
+
+h2{
+	margin-top: 60px;
+	color: black;
+	text-align: left;
+}
+
+h3{
+	color: black;
+	margin-top: 0px;
+	text-align: center;
+}
+
+p{
+	color: black;
+	font-size: : 10px;
+	margin-left: 10px;
 }
 
 .slider {
     -webkit-appearance: none;
-    width: 100%;
+    width: 80%;
     height: 15px;
     border-radius: 5px;   
-    background: #d3d3d3;
+    background: white;
     outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    margin-left: 25px;
 }
 
 .slider::-webkit-slider-thumb {
@@ -49,7 +231,7 @@
     width: 25px;
     height: 25px;
     border-radius: 50%; 
-    background: #4CAF50;
+    background: black;
     cursor: pointer;
 }
 
@@ -57,14 +239,42 @@
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #4CAF50;
+    background: white;
     cursor: pointer;
 }
+
+.sidenav {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: #a9d8ce;
+  overflow-x: hidden;
+  padding-top: 5px;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding-top: 0px;
+	position: fixed;
+    background-color: black;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+
+
 </style>
 
 <script>
 	var origImageData;//variavel global da imagem Original
-	var resetSlide;//variavel de controle 
+	var resetSlide;//variavel de controle
+	var m; 
 
 	function getPixelsFromImageElement(imgElem) {
         var canvas = document.createElement("canvas");
@@ -155,12 +365,25 @@
 	    	var imgElem = document.getElementById("img");;
 		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
 		    var bw = new encoder.ByteWriter();
-			encoder.encode(value,origImageData,bw);
+			m = encoder.encode(value,origImageData,bw);
 		    var url = bw.getImgUrl();
 
 		    var dstImgElem = document.getElementById("imgResult");
 			dstImgElem.setAttribute("src", url);
+
+			//Informações tamanho, dimensão e tempo
+			var output = document.getElementById("displaySize");
+			output.innerHTML = m.bw;
 			
+			var output2 = document.getElementById("displayHeight");
+			output2.innerHTML = m.height;
+
+			var output3 = document.getElementById("displayWidth");
+			output3.innerHTML = m.width;
+
+			var output4 = document.getElementById("displayTime");
+			output4.innerHTML = m.encodetime;
+
 			console.log(encoder.getQuantizationMatricies());
 		
 	}
@@ -192,6 +415,16 @@
 		extractY();
 		extractCr();
 		extractCb();
+	}
+
+	function showhide(id) {
+	    var x = document.getElementById(id);
+	    if (x.style.display === "block") {
+	    	x.style.display = "none";
+	    } else {
+	    	x.style.display = "block"
+	        
+	    }
 	}
 
 </script>
