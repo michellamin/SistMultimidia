@@ -496,7 +496,7 @@
          * var quality:int
          * 
          */
-        var init_quality_settings = function (quality, yqt=null, uvqt=null) {
+        var init_quality_settings = function (quality) {
             if (quality <= 0)
                 quality = 1;
 
@@ -504,39 +504,23 @@
                 quality = 100;
 
             sf = quality < 50 ? (5000 / quality)|0 : (200 - (quality<<1))|0;
-            console.log("init_quality:" + yqt);
-            console.log("init_quality:" + uvqt);
+
             /* init quantization tables */
-            init_quant_tables(sf, yqt, uvqt);
+            init_quant_tables(sf);
         };
 
         /** 
          * var sf:int: the scale factor
          * @returns
          */
-        var init_quant_tables = function (sff, usrYqt=null, usrUvqt=null)	{
+        var init_quant_tables = function (sff)	{
             var i;
             var I64 = 64;
             var I8 = 8;
-            var finalYqt = new Int32Array(64);
-            var finalUvqt = new Int32Array(64);
-
-            console.log("init_quant:" + usrYqt);
-            console.log("init_quant:" + usrUvqt);
-            if(usrYqt != null && usrUvqt != null){
-                finalYqt = usrYqt;
-                finalUvqt = usrUvqt;
-            }else{
-                finalYqt = YQT;
-                finalUvqt = UVQT;
-            }
-
-            console.log("init_final:" + finalYqt);
-            console.log("init_final:" + finalUvqt);
 
             for (i = 0; i < I64; ++i)
             {
-                var t = ((finalYqt[i]*sff+50)*0.01)|0;
+                var t = ((YQT[i]*sff+50)*0.01)|0;
                 if (t < 1) {
                     t = 1;
                 } else if (t > 255) {
@@ -547,7 +531,7 @@
 
             for (i = 0; i < I64; i++)
             {
-                var u = ((finalUvqt[i]*sff+50)*0.01)|0;
+                var u = ((UVQT[i]*sff+50)*0.01)|0;
                 if (u < 1) {
                     u = 1;
                 } else if (u > 255) {
@@ -1111,8 +1095,7 @@
         this.version = function() { return "petitóJPEG 0.4"; };
         
         //RETORNA MATRIZES DE QUANTIZAÇÃO PADRÃO
-        this.getLumQuantizationMatrix = function() { return YQT; };
-        this.getCromQuantizationMatrix = function() { return UVQT; };
+        this.getQuantizationMatricies = function() { return [YQT,UVQT]; };
 
         this.setVerbosity = function(flagVerbose) {
             flagQuiet = !flagVerbose;
@@ -1306,7 +1289,7 @@
             DEBUGMSG(sprintf("%d ms", encodetime));
         }
 
-        this.encode = function (quality, img, bw, yqt = null, uvqt = null)
+        this.encode = function (quality, img, bw)
         {
             if(!img) 
                 DEBUGMSG("input image not provided. aborting encode");
@@ -1317,9 +1300,7 @@
             DEBUGMSG(sprintf("pttjpeg_encode  qual:%d,  %dx%d", quality ,img.width,img.height ));
             var start = new Date().getTime();
 
-            console.log("encode:" + yqt);
-            console.log("encode:" + uvqt);
-            init_quality_settings(quality, yqt, uvqt);
+            init_quality_settings(quality);
     
 
             /* start the bitwriter */
