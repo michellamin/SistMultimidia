@@ -23,8 +23,8 @@
 		  <input type="button" onclick="startEncoding();" value="Encode" id="encodeButton">
 		  <input type="checkbox" id="customMatrix"> Use custom quantization matrix
 	</div>
-	<!--<button id="firstphasebutton" onclick="showhide('firstphase')">First Phase</button>
-
+	<h5>Explanation Step-by-Step</h5>
+	<button id="firstphasebutton" onclick="showhide('firstphase')">First Phase</button>
 	<div id="firstphase">
 		<p><font size="2">A representação de cores é convertida de RGB(usada em monitores) para YCbCr, consistindo em uma componente de brilho Y e duas componentes de cores Cb e Cr(b e r de blue e red).</font></p>
 	</div>
@@ -33,13 +33,22 @@
 	<div id="secondphase">
 		<div><font size="2">
 		<p>Em seguida, a imagem é dividida em blocos de 8×8 pixels, e a cada bloco é aplicada a Transformada Discreta de Cosseno com sigla DCT, do inglês.
-		</p>
-		<p>Após isso, é usada uma matriz de quantização 8x8 para fazer a quantificação de cada bloco, ou seja, se aplica um coeficiente de perda (que permite determinar a proporção tamanho/qualidade) que anulará ou diminuirá os valores de alta frequência, para minimizar os detalhes, percorrendo o bloco inteligentemente com uma codificação RLE (em ziguezague, para retirar um máximo de valores nulos).
-		</p>
-		<p>Os dados resultantes para todos os blocos 8×8, que tipicamente são matrizes onde os números significativos estão no canto superior esquerdo, e com aspecto de matriz esparsa, são novamente compactados com um algoritmo sem perdas, uma variante da codificação de Huffman e armazenados no arquivo JPEG.</p>
-		</font>
+		</p></font>
 		</div>
-	</div>-->
+	</div>
+
+	<button id="thirdphasebutton" onclick="showhide('thirdphase')">Third Phase</button>
+
+	<div id="thirdphase">
+		<p><font size="2">Após isso, é usada uma matriz de quantização 8x8 para fazer a quantificação de cada bloco, ou seja, se aplica um coeficiente de perda (que permite determinar a proporção tamanho/qualidade) que anulará ou diminuirá os valores de alta frequência, para minimizar os detalhes, percorrendo o bloco inteligentemente com uma codificação RLE (em ziguezague, para retirar um máximo de valores nulos).
+		</p></font>
+	</div>
+	<button id="fourthphasebutton" onclick="showhide('fourthphase')">Fourth Phase</button>
+	<div id = "fourthphase">
+		<p><font size="2">Os dados resultantes para todos os blocos 8×8, que tipicamente são matrizes onde os números significativos estão no canto superior esquerdo, e com aspecto de matriz esparsa, são novamente compactados com um algoritmo sem perdas, uma variante da codificação de Huffman e armazenados no arquivo JPEG.</p>
+		</font>
+	</div>
+	
   	
   	
 </div>
@@ -60,11 +69,175 @@
 			<div class="row">
 					<div class="col">
 						Matriz de luminância<br/>
-						<textarea cols="23" rows="8" id="luminanceMatrix"></textarea>
+						<table id="tableY">
+							<tr>
+							<td id= '00' contenteditable="true" oninput="changeYMatrix('00')" ></td>
+							<td id= '01' contenteditable="true" oninput="changeYMatrix('01')"></td>
+							<td id= '02' contenteditable="true" oninput="changeYMatrix('02')"></td>
+							<td id= '03' contenteditable="true" oninput="changeYMatrix('03')"></td>
+							<td id= '04' contenteditable="true" oninput="changeYMatrix('04')"></td>
+							<td id= '05' contenteditable="true" oninput="changeYMatrix('05')"></td>
+							<td id= '06' contenteditable="true" oninput="changeYMatrix('06')"></td>
+							<td id= '07' contenteditable="true" oninput="changeYMatrix('07')"></td>
+							</tr>
+							<tr>
+							<td id= '08' contenteditable="true" oninput="changeYMatrix('08')"></td>
+							<td id= '09' contenteditable="true" oninput="changeYMatrix('09')"></td>
+							<td id= '10' contenteditable="true" oninput="changeYMatrix('10')"></td>
+							<td id= '11' contenteditable="true" oninput="changeYMatrix('11')"></td>
+							<td id= '12' contenteditable="true" oninput="changeYMatrix('12')"></td>
+							<td id= '13' contenteditable="true" oninput="changeYMatrix('13')"></td>
+							<td id= '14' contenteditable="true" oninput="changeYMatrix('14')"></td>
+							<td id= '15' contenteditable="true" oninput="changeYMatrix('15')"></td>
+							</tr>
+							<tr>
+							<td id= '16' contenteditable="true" oninput="changeYMatrix('16')"></td>
+							<td id= '17' contenteditable="true" oninput="changeYMatrix('17')"></td>
+							<td id= '18' contenteditable="true" oninput="changeYMatrix('18')"></td>
+							<td id= '19' contenteditable="true" oninput="changeYMatrix('19')"></td>
+							<td id= '20' contenteditable="true" oninput="changeYMatrix('20')"></td>
+							<td id= '21' contenteditable="true" oninput="changeYMatrix('21')"></td>
+							<td id= '22' contenteditable="true" oninput="changeYMatrix('22')"></td>
+							<td id= '23' contenteditable="true" oninput="changeYMatrix('23')"></td>
+							</tr>
+							<tr>
+							<td id= '24' contenteditable="true" oninput="changeYMatrix('24')"></td>
+							<td id= '25' contenteditable="true" oninput="changeYMatrix('25')"></td>
+							<td id= '26' contenteditable="true" oninput="changeYMatrix('26')"></td>
+							<td id= '27' contenteditable="true" oninput="changeYMatrix('27')"></td>
+							<td id= '28' contenteditable="true" oninput="changeYMatrix('28')"></td>
+							<td id= '29' contenteditable="true" oninput="changeYMatrix('29')"></td>
+							<td id= '30' contenteditable="true" oninput="changeYMatrix('30')"></td>
+							<td id= '31' contenteditable="true" oninput="changeYMatrix('31')"></td>
+							</tr>
+							<tr>
+							<td id= '32' contenteditable="true" oninput="changeYMatrix('32')"></td>
+							<td id= '33' contenteditable="true" oninput="changeYMatrix('33')"></td>
+							<td id= '34' contenteditable="true" oninput="changeYMatrix('34')"></td>
+							<td id= '35' contenteditable="true" oninput="changeYMatrix('35')"></td>
+							<td id= '36' contenteditable="true" oninput="changeYMatrix('36')"></td>
+							<td id= '37' contenteditable="true" oninput="changeYMatrix('37')"></td>
+							<td id= '38' contenteditable="true" oninput="changeYMatrix('38')"></td>
+							<td id= '39' contenteditable="true" oninput="changeYMatrix('39')"></td>
+							</tr>
+							<tr>
+							<td id= '40' contenteditable="true" oninput="changeYMatrix('40')"></td>
+							<td id= '41' contenteditable="true" oninput="changeYMatrix('41')"></td>
+							<td id= '42' contenteditable="true" oninput="changeYMatrix('42')"></td>
+							<td id= '43' contenteditable="true" oninput="changeYMatrix('43')"></td>
+							<td id= '44' contenteditable="true" oninput="changeYMatrix('44')"></td>
+							<td id= '45' contenteditable="true" oninput="changeYMatrix('45')"></td>
+							<td id= '46' contenteditable="true" oninput="changeYMatrix('46')"></td>
+							<td id= '47' contenteditable="true" oninput="changeYMatrix('47')"></td>
+							</tr>
+							<tr>
+							<td id= '48' contenteditable="true" oninput="changeYMatrix('48')"></td>
+							<td id= '49' contenteditable="true" oninput="changeYMatrix('49')"></td>
+							<td id= '50' contenteditable="true" oninput="changeYMatrix('50')"></td>
+							<td id= '51' contenteditable="true" oninput="changeYMatrix('51')"></td>
+							<td id= '52' contenteditable="true" oninput="changeYMatrix('52')"></td>
+							<td id= '53' contenteditable="true" oninput="changeYMatrix('53')"></td>
+							<td id= '54' contenteditable="true" oninput="changeYMatrix('54')"></td>
+							<td id= '55' contenteditable="true" oninput="changeYMatrix('55')"></td>
+							</tr>
+							<tr>
+							<td id= '56' contenteditable="true" oninput="changeYMatrix('56')"></td>
+							<td id= '57' contenteditable="true" oninput="changeYMatrix('57')"></td>
+							<td id= '58' contenteditable="true" oninput="changeYMatrix('58')"></td>
+							<td id= '59' contenteditable="true" oninput="changeYMatrix('59')"></td>
+							<td id= '60' contenteditable="true" oninput="changeYMatrix('60')"></td>
+							<td id= '61' contenteditable="true" oninput="changeYMatrix('61')"></td>
+							<td id= '62' contenteditable="true" oninput="changeYMatrix('62')"></td>
+							<td id= '63' contenteditable="true" oninput="changeYMatrix('63')"></td>
+							</tr>
+						</table>
+						<!--<textarea cols="8" rows="8" id="luminanceMatrix"></textarea>-->
 					</div>
 					<div class="col">
 						Matriz de crominância<br/>
-						<textarea rows="8" id="crominanceMatrix"></textarea>
+						<table id="tableC">
+							<tr>
+							<td id= '000' contenteditable="true" oninput="changeCMatrix('000')" ></td>
+							<td id= '001' contenteditable="true" oninput="changeCMatrix('001')"></td>
+							<td id= '002' contenteditable="true" oninput="changeCMatrix('002')"></td>
+							<td id= '003' contenteditable="true" oninput="changeCMatrix('003')"></td>
+							<td id= '004' contenteditable="true" oninput="changeCMatrix('004')"></td>
+							<td id= '005' contenteditable="true" oninput="changeCMatrix('005')"></td>
+							<td id= '006' contenteditable="true" oninput="changeCMatrix('006')"></td>
+							<td id= '007' contenteditable="true" oninput="changeCMatrix('007')"></td>
+							</tr>
+							<tr>
+							<td id= '008' contenteditable="true" oninput="changeCMatrix('008')"></td>
+							<td id= '009' contenteditable="true" oninput="changeCMatrix('009')"></td>
+							<td id= '010' contenteditable="true" oninput="changeCMatrix('010')"></td>
+							<td id= '011' contenteditable="true" oninput="changeCMatrix('011')"></td>
+							<td id= '012' contenteditable="true" oninput="changeCMatrix('012')"></td>
+							<td id= '013' contenteditable="true" oninput="changeCMatrix('013')"></td>
+							<td id= '014' contenteditable="true" oninput="changeCMatrix('014')"></td>
+							<td id= '015' contenteditable="true" oninput="changeCMatrix('015')"></td>
+							</tr>
+							<tr>
+							<td id= '016' contenteditable="true" oninput="changeCMatrix('016')"></td>
+							<td id= '017' contenteditable="true" oninput="changeCMatrix('017')"></td>
+							<td id= '018' contenteditable="true" oninput="changeCMatrix('018')"></td>
+							<td id= '019' contenteditable="true" oninput="changeCMatrix('019')"></td>
+							<td id= '020' contenteditable="true" oninput="changeCMatrix('020')"></td>
+							<td id= '021' contenteditable="true" oninput="changeCMatrix('021')"></td>
+							<td id= '022' contenteditable="true" oninput="changeCMatrix('022')"></td>
+							<td id= '023' contenteditable="true" oninput="changeCMatrix('023')"></td>
+							</tr>
+							<tr>
+							<td id= '024' contenteditable="true" oninput="changeCMatrix('024')"></td>
+							<td id= '025' contenteditable="true" oninput="changeCMatrix('025')"></td>
+							<td id= '026' contenteditable="true" oninput="changeCMatrix('026')"></td>
+							<td id= '027' contenteditable="true" oninput="changeCMatrix('027')"></td>
+							<td id= '028' contenteditable="true" oninput="changeCMatrix('028')"></td>
+							<td id= '029' contenteditable="true" oninput="changeCMatrix('029')"></td>
+							<td id= '030' contenteditable="true" oninput="changeCMatrix('030')"></td>
+							<td id= '031' contenteditable="true" oninput="changeCMatrix('031')"></td>
+							</tr>
+							<tr>
+							<td id= '032' contenteditable="true" oninput="changeCMatrix('032')"></td>
+							<td id= '033' contenteditable="true" oninput="changeCMatrix('033')"></td>
+							<td id= '034' contenteditable="true" oninput="changeCMatrix('034')"></td>
+							<td id= '035' contenteditable="true" oninput="changeCMatrix('035')"></td>
+							<td id= '036' contenteditable="true" oninput="changeCMatrix('036')"></td>
+							<td id= '037' contenteditable="true" oninput="changeCMatrix('037')"></td>
+							<td id= '038' contenteditable="true" oninput="changeCMatrix('038')"></td>
+							<td id= '039' contenteditable="true" oninput="changeCMatrix('039')"></td>
+							</tr>
+							<tr>
+							<td id= '040' contenteditable="true" oninput="changeCMatrix('040')"></td>
+							<td id= '041' contenteditable="true" oninput="changeCMatrix('041')"></td>
+							<td id= '042' contenteditable="true" oninput="changeCMatrix('042')"></td>
+							<td id= '043' contenteditable="true" oninput="changeCMatrix('043')"></td>
+							<td id= '044' contenteditable="true" oninput="changeCMatrix('044')"></td>
+							<td id= '045' contenteditable="true" oninput="changeCMatrix('045')"></td>
+							<td id= '046' contenteditable="true" oninput="changeCMatrix('046')"></td>
+							<td id= '047' contenteditable="true" oninput="changeCMatrix('047')"></td>
+							</tr>
+							<tr>
+							<td id= '048' contenteditable="true" oninput="changeCMatrix('048')"></td>
+							<td id= '049' contenteditable="true" oninput="changeCMatrix('049')"></td>
+							<td id= '050' contenteditable="true" oninput="changeCMatrix('050')"></td>
+							<td id= '051' contenteditable="true" oninput="changeCMatrix('051')"></td>
+							<td id= '052' contenteditable="true" oninput="changeCMatrix('052')"></td>
+							<td id= '053' contenteditable="true" oninput="changeCMatrix('053')"></td>
+							<td id= '054' contenteditable="true" oninput="changeCMatrix('054')"></td>
+							<td id= '055' contenteditable="true" oninput="changeCMatrix('055')"></td>
+							</tr>
+							<tr>
+							<td id= '056' contenteditable="true" oninput="changeCMatrix('056')"></td>
+							<td id= '057' contenteditable="true" oninput="changeCMatrix('057')"></td>
+							<td id= '058' contenteditable="true" oninput="changeCMatrix('058')"></td>
+							<td id= '059' contenteditable="true" oninput="changeCMatrix('059')"></td>
+							<td id= '060' contenteditable="true" oninput="changeCMatrix('060')"></td>
+							<td id= '061' contenteditable="true" oninput="changeCMatrix('061')"></td>
+							<td id= '062' contenteditable="true" oninput="changeCMatrix('062')"></td>
+							<td id= '063' contenteditable="true" oninput="changeCMatrix('063')"></td>
+							</tr>
+						</table>
+						<!--<textarea cols="8" rows="8" id="crominanceMatrix"></textarea>-->
 					</div>
 			</div>		
 		</div>
@@ -103,6 +276,22 @@
 
 <style type="text/css">
 
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+	width: 40px;
+    padding: 0px;
+    text-align: center;
+
+}
+
+h5{
+	margin-top: 20px;
+	text-align: center;
+}
+
 #encodeButton{
 	margin-top: 20px;
 	margin-left: 20px;
@@ -136,6 +325,34 @@
 	margin-top: 20px;
 	margin-left: 20px;
 	display: block;
+}
+#thirdphasebutton{
+	margin-top: 20px;
+	margin-left: 20px;
+	display: block;
+}
+#fourthphasebutton{
+	margin-top: 20px;
+	margin-left: 20px;
+	display: block;
+}
+
+#thirdphase{
+	width: 100%;
+    padding: 5px 0;
+    text-align: left;
+    background-color: lightblue;
+    margin-top: 1px;
+    display: none;
+}
+
+#fourthphase{
+	width: 100%;
+    padding: 5px 0;
+    text-align: left;
+    background-color: lightblue;
+    margin-top: 1px;
+    display: none;
 }
 
 #secondphase{
@@ -242,7 +459,7 @@ h3{
 
 p{
 	color: black;
-	font-size:  10px;
+	font-size:  12px;
 	margin-left: 10px;
 }
 
@@ -335,7 +552,7 @@ p{
 		99, 99, 99, 99, 99, 99, 99, 99
 	]);
 
-	document.getElementById("luminanceMatrix").innerHTML = userYqt;
+	
 
 	function getPixelsFromImageElement(imgElem) {
         var canvas = document.createElement("canvas");
@@ -448,7 +665,6 @@ p{
 			//PEGA AS MATRIZES DE QUANTIZAÇÃO
 			// console.log(encoder.getLumQuantizationMatrix());
 			// console.log(encoder.getCromQuantizationMatrix());
-		
 	}
 
 	//Reseta o valor do Slider para um valor inicial
@@ -481,10 +697,12 @@ p{
 	}
 
 	var startEncoding = function(){
-		if(document.getElementById("customMatrix").value == "true"){
+		if(document.getElementById("customMatrix").checked == true){
 			extractY();
 			extractCr();
 			extractCb();
+			var slider = document.getElementById("slideId");
+			encodeQuality = slider.value;
 			encode(parseInt(encodeQuality),userYqt,userUvqt);
 		}else{
 			extractY();
@@ -498,19 +716,45 @@ p{
 		var x = document.getElementById(id);
 		var y = document.getElementById(id+'Button');
 
-		if(!y.classList.contains('active') ){
-			y.classList.add('active');
-		}else{
-			y.classList.remove('active');
-		}
-
-	    if (x.style.display === "block") {
+		if (x.style.display === "block") {
 	    	x.style.display = "none";
 	    } else {
 	    	x.style.display = "block"
 	        
 	    }
+
+		if(!y.classList.contains('active') ){
+			y.classList.add('active');
+		}else{
+			y.classList.remove('active');
+		}
 	}
+
+	function loadmatrix(id,tableData){
+		table = document.getElementById(id);
+		var k = 0;
+	 	for(var i = 0; i < table.rows.length; i++){
+	      	for(var j = 0; j < table.rows[i].cells.length; j++){
+	          table.rows[i].cells[j].innerHTML = tableData[k];
+	          k++;
+          }
+        }
+	}
+
+	function changeYMatrix(id){
+		var value = document.getElementById(id);
+		var position = parseInt(id);
+		userYqt[position] = value.innerHTML;
+	}
+
+	function changeCMatrix(id){
+		var value = document.getElementById(id);
+		var position = parseInt(id);
+		userUvqt[position] = value.innerHTML;
+	}
+
+	loadmatrix('tableY',userYqt);
+	loadmatrix('tableC',userUvqt);
 
 </script>
 <script src="js/bootstrap.min.js"></script>
