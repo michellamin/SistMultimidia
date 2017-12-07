@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="cache-control" content="no-cache" />
 <title>JPEG Encoder</title>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 </head>
 <body>
 <div id="mySidenav" class="sidenav">
@@ -19,9 +20,10 @@
 		<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
 	</div>
   	<div>
-  		<input type="button" onclick="startEncoding();" value="Encode" id="encodeButton">
+		  <input type="button" onclick="startEncoding();" value="Encode" id="encodeButton">
+		  <input type="checkbox" id="customMatrix"> Use custom quantization matrix
 	</div>
-	<button id="firstphasebutton" onclick="showhide('firstphase')">First Phase</button>
+	<!--<button id="firstphasebutton" onclick="showhide('firstphase')">First Phase</button>
 
 	<div id="firstphase">
 		<p><font size="2">A representação de cores é convertida de RGB(usada em monitores) para YCbCr, consistindo em uma componente de brilho Y e duas componentes de cores Cb e Cr(b e r de blue e red).</font></p>
@@ -37,17 +39,35 @@
 		<p>Os dados resultantes para todos os blocos 8×8, que tipicamente são matrizes onde os números significativos estão no canto superior esquerdo, e com aspecto de matriz esparsa, são novamente compactados com um algoritmo sem perdas, uma variante da codificação de Huffman e armazenados no arquivo JPEG.</p>
 		</font>
 		</div>
-	</div>
+	</div>-->
   	
   	
 </div>
 
 <div id="main">
 	<div class="topnav" id="myTopnav">
+		<button id="advancedModeButton" onclick="showhide('advancedMode')">Advanced mode</button>
 	  	<button id="luminanciaButton" onclick="showhide('luminancia')">Luminance - Y</button>
 	  	<button id="cbButton" onclick="showhide('cb')">Chrominance - Cb</button>
 	  	<button id="crButton" onclick="showhide('cr')">Chrominance - Cr</button>
-	  	<button id="compressButton" onclick="showhide('compress')">Compressed</button>
+		<button id="compressButton" onclick="showhide('compress')">Compressed</button>
+	</div>
+
+		<div class="container" id="advancedMode">
+			<div class="row">
+				<h2>Matrizes de quantização:</h2>
+			</div>
+			<div class="row">
+					<div class="col">
+						Matriz de luminância<br/>
+						<textarea cols="23" rows="8" id="luminanceMatrix"></textarea>
+					</div>
+					<div class="col">
+						Matriz de crominância<br/>
+						<textarea rows="8" id="crominanceMatrix"></textarea>
+					</div>
+			</div>		
+		</div>
 	</div>
 
 	<h2>Original:</h2>
@@ -75,6 +95,7 @@
 		<h2>Compressed:</h2>
 		<img id="imgResult" src="img/sample_shard.png" />
 	</div>
+	
 </div>
 
 
@@ -134,13 +155,11 @@
     text-decoration: none;
     font-size: 17px;
 	background-color: #a9d8ce;
-    color: white;
     display: block;
 }
 
 #cbButton{
 	float: left;
-    color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -151,7 +170,6 @@
 
 #crButton{
 	float: left;
-    color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -162,13 +180,26 @@
 
 #compressButton{
 	float: left;
-    color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
 	background-color: #a9d8ce;
     color: black;
+}
+
+#advancedModeButton{
+	float: left;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+	background-color: #a9d8ce;
+    color: yellow;
+}
+
+.active{
+	background-color: #83afa4 !important;
 }
 
 #luminancia{
@@ -187,6 +218,9 @@
 	display: none;
 }
 
+#advancedMode{
+	display: none;
+}
 
 h1{
 	color: black;
@@ -208,7 +242,7 @@ h3{
 
 p{
 	color: black;
-	font-size: : 10px;
+	font-size:  10px;
 	margin-left: 10px;
 }
 
@@ -272,9 +306,36 @@ p{
 </style>
 
 <script>
+	var encodeQuality;
 	var origImageData;//variavel global da imagem Original
 	var resetSlide;//variavel de controle
-	var m; 
+	var m;
+
+	//MATRIZES DE QUANTIZAÇÃO
+	//matriz de luminância
+	var userYqt = new Uint32Array([
+		16, 11, 10, 16, 24, 40, 51, 61,
+		12, 12, 14, 19, 26, 58, 60, 55,
+		14, 13, 16, 24, 40, 57, 69, 56,
+		14, 17, 22, 29, 51, 87, 80, 62,
+		18, 22, 37, 56, 68,109,103, 77,
+		24, 35, 55, 64, 81,104,113, 92,
+		49, 64, 78, 87,103,121,120,101,
+		72, 92, 95, 98,112,100,103, 99
+	]);
+	//matriz de crminância
+	var userUvqt = new Uint32Array([
+		17, 18, 24, 47, 99, 99, 99, 99,
+		18, 21, 26, 66, 99, 99, 99, 99,
+		24, 26, 56, 99, 99, 99, 99, 99,
+		47, 66, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99
+	]);
+
+	document.getElementById("luminanceMatrix").innerHTML = userYqt;
 
 	function getPixelsFromImageElement(imgElem) {
         var canvas = document.createElement("canvas");
@@ -358,14 +419,14 @@ p{
 	}
 
 	//Faz o encoding a partir da qualidade do slider
-    var encode = function(value){
+    var encode = function(value, yqt = null, uvqt = null){
 			var encoder = new pttJPEG();
 	    	var v = encoder.version();
 	    	console.log(v);
 	    	var imgElem = document.getElementById("img");;
 		    var origImageData = new encoder.pttImage( getPixelsFromImageElement(imgElem));
 		    var bw = new encoder.ByteWriter();
-			m = encoder.encode(value,origImageData,bw);
+			m = encoder.encode(value,origImageData,bw,yqt,uvqt);
 		    var url = bw.getImgUrl();
 
 		    var dstImgElem = document.getElementById("imgResult");
@@ -384,7 +445,9 @@ p{
 			var output4 = document.getElementById("displayTime");
 			output4.innerHTML = m.encodetime;
 
-			console.log(encoder.getQuantizationMatricies());
+			//PEGA AS MATRIZES DE QUANTIZAÇÃO
+			// console.log(encoder.getLumQuantizationMatrix());
+			// console.log(encoder.getCromQuantizationMatrix());
 		
 	}
 
@@ -399,7 +462,7 @@ p{
     	}	
 	}
 
-    window.onload = function() {
+	window.onload = function() {
 	    /**
 	     * Returns an ImageData object 
 	     * @param imgElem
@@ -409,16 +472,38 @@ p{
 		output.innerHTML = slider.value; 
 		slider.oninput = function() {
 	    	output.innerHTML = this.value;
-			encode(parseInt(this.value));
+			encodeQuality = this.value;
 		}
-		encode(parseInt(this.value));	
 		extractY();
 		extractCr();
 		extractCb();
+		encode(parseInt(encodeQuality));			
+	}
+
+	var startEncoding = function(){
+		if(document.getElementById("customMatrix").value == "true"){
+			extractY();
+			extractCr();
+			extractCb();
+			encode(parseInt(encodeQuality),userYqt,userUvqt);
+		}else{
+			extractY();
+			extractCr();
+			extractCb();
+			encode(parseInt(encodeQuality));
+		}
 	}
 
 	function showhide(id) {
-	    var x = document.getElementById(id);
+		var x = document.getElementById(id);
+		var y = document.getElementById(id+'Button');
+
+		if(!y.classList.contains('active') ){
+			y.classList.add('active');
+		}else{
+			y.classList.remove('active');
+		}
+
 	    if (x.style.display === "block") {
 	    	x.style.display = "none";
 	    } else {
@@ -428,5 +513,6 @@ p{
 	}
 
 </script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
