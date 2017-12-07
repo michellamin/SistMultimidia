@@ -11,10 +11,10 @@
 	<h1>JPEG Encoder</h1>
 	<div id="slidecontainer">
   		<input type="range" min="1" max="100" value="50" class="slider" id="slideId">
-  		<h3>Quality: <span id="displayQuality"></span>%</h3>
-  		<h3>Size: <span id="displaySize"></span>Bytes</h3>
-  		<h3>Dimension: <span id="displayHeight"></span>x<span id="displayWidth"></span></h3>
-  		<h3>Time: <span id="displayTime"></span>ms</h3>
+  		<h4>Quality: <span id="displayQuality"></span>%</h4>
+  		<h4>Size: <span id="displaySize"></span> Bytes</h4>
+  		<h4>Dimension: <span id="displayHeight"></span>x<span id="displayWidth"></span></h4>
+  		<h4>Time: <span id="displayTime"></span>ms</h4>
 	</div>
 	<div id="amount">
 		<input type="file" name="fileToUpload" id="fileToUpload" onchange='readfile(this.files[0])'>
@@ -71,7 +71,7 @@
 						Matriz de luminância<br/>
 						<table id="tableY">
 							<tr>
-							<td id= '00' contenteditable="true" oninput="changeYMatrix('00')" ></td>
+							<td id= '00' contenteditable="true" oninput="changeYMatrix('00')"></td>
 							<td id= '01' contenteditable="true" oninput="changeYMatrix('01')"></td>
 							<td id= '02' contenteditable="true" oninput="changeYMatrix('02')"></td>
 							<td id= '03' contenteditable="true" oninput="changeYMatrix('03')"></td>
@@ -153,6 +153,7 @@
 						</table>
 						<!--<textarea cols="8" rows="8" id="luminanceMatrix"></textarea>-->
 					</div>
+					
 					<div class="col">
 						Matriz de crominância<br/>
 						<table id="tableC">
@@ -239,7 +240,10 @@
 						</table>
 						<!--<textarea cols="8" rows="8" id="crominanceMatrix"></textarea>-->
 					</div>
-			</div>		
+					<button id="resetmatrixydefaut" onclick="resetMatrixDefault('tableY')">Reset default Y</button>
+					<button id="resetmatrixcdefaut" onclick="resetMatrixDefault('tableC')">Reset default C</button>
+			</div>
+
 		</div>
 	</div>
 
@@ -275,6 +279,15 @@
 <script src="pttjpeg.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css">
+
+#resetmatrixcdefaut{
+	height: 50px;
+	margin-left: 20px;
+}
+
+#resetmatrixydefaut{
+	height: 50px;
+}
 
 table, th, td {
     border: 1px solid black;
@@ -457,6 +470,12 @@ h3{
 	text-align: center;
 }
 
+h4{
+	color: black;
+	margin-top: 0px;
+	text-align: center;
+}
+
 p{
 	color: black;
 	font-size:  12px;
@@ -542,6 +561,29 @@ p{
 	]);
 	//matriz de crminância
 	var userUvqt = new Uint32Array([
+		17, 18, 24, 47, 99, 99, 99, 99,
+		18, 21, 26, 66, 99, 99, 99, 99,
+		24, 26, 56, 99, 99, 99, 99, 99,
+		47, 66, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99,
+		99, 99, 99, 99, 99, 99, 99, 99
+	]);
+
+	//matriz de luminância
+	var userYqtDefault = new Uint32Array([
+		16, 11, 10, 16, 24, 40, 51, 61,
+		12, 12, 14, 19, 26, 58, 60, 55,
+		14, 13, 16, 24, 40, 57, 69, 56,
+		14, 17, 22, 29, 51, 87, 80, 62,
+		18, 22, 37, 56, 68,109,103, 77,
+		24, 35, 55, 64, 81,104,113, 92,
+		49, 64, 78, 87,103,121,120,101,
+		72, 92, 95, 98,112,100,103, 99
+	]);
+	//matriz de crminância
+	var userUvqtDefault = new Uint32Array([
 		17, 18, 24, 47, 99, 99, 99, 99,
 		18, 21, 26, 66, 99, 99, 99, 99,
 		24, 26, 56, 99, 99, 99, 99, 99,
@@ -685,7 +727,8 @@ p{
 	     */
 	 	var slider = document.getElementById("slideId");
 		var output = document.getElementById("displayQuality");
-		output.innerHTML = slider.value; 
+		output.innerHTML = slider.value;
+		encodeQuality = slider.value; 
 		slider.oninput = function() {
 	    	output.innerHTML = this.value;
 			encodeQuality = this.value;
@@ -701,8 +744,6 @@ p{
 			extractY();
 			extractCr();
 			extractCb();
-			var slider = document.getElementById("slideId");
-			encodeQuality = slider.value;
 			encode(parseInt(encodeQuality),userYqt,userUvqt);
 		}else{
 			extractY();
@@ -751,6 +792,34 @@ p{
 		var value = document.getElementById(id);
 		var position = parseInt(id);
 		userUvqt[position] = value.innerHTML;
+	}
+
+	function resetMatrixDefault(id){
+		if(id == "tableY"){
+			table = document.getElementById(id);
+			var k = 0;
+	 		for(var i = 0; i < table.rows.length; i++){
+	      		for(var j = 0; j < table.rows[i].cells.length; j++){
+	          		table.rows[i].cells[j].innerHTML = userYqtDefault[k];
+	          		k++;
+          		}
+        	}
+        	for(var x = 0; x < userYqtDefault.length; x++){
+        		userYqt[x] = userYqtDefault[x];
+        	}
+		}else{
+			table = document.getElementById(id);
+			var k = 0;
+	 		for(var i = 0; i < table.rows.length; i++){
+	      		for(var j = 0; j < table.rows[i].cells.length; j++){
+	          		table.rows[i].cells[j].innerHTML = userUvqtDefault[k];
+	          		k++;
+          		}
+        	}
+        	for(var x = 0; x < userUvqtDefault.length; x++){
+        		userUvqt[x] = userUvqtDefault[x];
+        	}
+		}
 	}
 
 	loadmatrix('tableY',userYqt);
